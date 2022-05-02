@@ -1,0 +1,15 @@
+body{
+    background-color: black;
+}
+
+.line {
+    border-left: 6px solid green;
+    height: 30px;
+    flex-grow: 0.01;
+}
+
+.container {
+    /*outline: white auto 10px;*/
+    display: flex;
+    justify-content: center;
+}

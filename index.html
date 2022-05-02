@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title> 
+</head>
+
+<body onload="gen()">
+    <button onclick="bubbleSort()">Bubble Sort</button>
+    <button onclick="insertionSort()">Insertion Sort</button>
+    <button onclick="quick()">Quick Sort</button>
+    <button onclick="gen()">Generate</button>
+
+    <div class="container"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    let totalLines = 10
+
+    function gen(){
+        // Grabs container and removes all lines
+        let container = document.querySelector("div.container")
+        container.innerHTML = ""
+        // Generates lines with differing lengths and appends them to container
+        for(let x = 0; x < totalLines; x++){
+            let line = document.createElement("div")
+            line.className = "line"
+            line.style.height = Math.floor(Math.random() * (180 - 30) + 30) + "px"
+            line.style.borderLeftColor = "green"
+            container.append(line)
+        }
+    }
+
+    function is_greater(rightLine, leftLine){
+        // Checks if line to the left is longer
+        if(get_num(rightLine) < get_num(leftLine)){
+            return true
+        }
+        return false
+    }
+
+    // Removes PX and converts str to int
+    function get_num(line){
+        //console.log(line)
+        if(line == undefined){
+            return undefined;
+        }
+        return Number(line.style.height.replace("px", ""));
+    }
+
+    // Wait function
+    const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
+    async function insertionSort(){
+        let lines = document.querySelectorAll("div.container > div")
+        for(let x = 1; x < lines.length; x++){
+            let current = get_num(lines[x])
+            let i = x - 1 
+            while((i > -1) && (get_num(lines[i]) > current)){
+                lines[i + 1].style.height = lines[i].style.height;
+                lines[i + 1].style.borderLeftColor = "yellow"
+                lines[i].style.borderLeftColor = "red"
+                await sleep(100)
+                lines[i + 1].style.borderLeftColor = "green"
+                lines[i].style.borderLeftColor = "green"
+                i--;
+            }
+            lines[i+1].style.height = current + "px"
+
+        }
+    }
+
+    async function bubbleSort(){
+        let lines = document.querySelectorAll("div.container > div")
+        let sorted = false;
+        while (!sorted){
+            changed = false;
+            for(let x = 1; x < lines.length; x++){
+                if(is_greater(lines[x], lines[x - 1])){
+                    let temp = lines[x].style.height;
+                    lines[x].style.height = lines[x - 1].style.height;
+                    lines[x].style.borderLeftColor = "red";
+                    lines[x - 1].style.height = temp;
+                    changed = true;
+                    await sleep(100)
+                }
+
+                lines[x].style.borderLeftColor  = "green";
+
+                if(x == lines.length - 1 && !changed){
+                    sorted = true;
+                }
+            }
+        }
+    }
+
+    function quick(){
+        let lines = document.querySelectorAll("div.container > div")
+        quickSort(0, lines.length - 1)
+    }
+
+    function quickSort(lowIndex, highIndex){
+        let lines = document.querySelectorAll("div.container > div")
+        let i = lowIndex;
+        let j = highIndex;
+        // Gets middle element
+        let pivot = get_num(lines[Math.floor(i + (j - i)/2)]);
+
+        while(i <= j){
+            while(get_num(lines[i]) != undefined && get_num(lines[i]) < pivot){
+                i++;
+            }  
+            while(get_num(lines[j]) != undefined &&get_num(lines[j]) > pivot){
+                j--;
+            }
+
+            if(i <= j){
+                swapNumbers(i, j)
+                // Moves index to next position on both sides
+                i++;
+                j--;
+            }
+
+            // Recursion
+            if(lowIndex < j){
+                quickSort(lowIndex, j);
+            }
+            if(i < highIndex){
+                quickSort(i, highIndex);
+            }
+        }
+    }
+
+    async function swapNumbers(i, j){
+        let lines = document.querySelectorAll("div.container > div")
+        let temp = lines[i].style.height;
+        lines[i].style.height = lines[j].style.height;
+        lines[i].style.borderLeftColor = "red";
+        lines[j].style.height = temp;
+        await sleep(100)
+        lines[i].style.borderLeftColor = "green";
+    }
+
+</script>
